@@ -7,6 +7,14 @@ type Snapshot = { bodyClass: string; file: string; title: string };
 type Manifest = Record<string, Snapshot>;
 type CurrentLocation = { path: string; search: string };
 
+const initialHomeManifest: Manifest = {
+  "/": {
+    bodyClass: "body-black",
+    file: "/snapshots/index.fragment.html",
+    title: "Webflow",
+  },
+};
+
 const latestFilmProjects = selectedWorkStudios
   .filter((studio) => studio.name !== "Live Events")
   .flatMap((studio) => studio.projects);
@@ -206,13 +214,30 @@ function localizeEventImages(root: Element, assetMap: Readonly<Record<string, st
 function prepareRecoveredHtml(
   html: string,
   assetMap: Readonly<Record<string, string>>,
+  path: string,
 ): string {
   const template = document.createElement("template");
   template.innerHTML = mapRecoveredAssets(html, assetMap);
 
+  for (const node of template.content.querySelectorAll(
+    ".page-loader-container, iframe[src*='stripe'], iframe[src*='paypal'], iframe[name^='__privateStripe'], #lightbox-mountpoint",
+  )) {
+    node.remove();
+  }
+
+  if (path === "/") {
+    const collaboratorsHeading = [...template.content.querySelectorAll<HTMLElement>(".h2")]
+      .find((heading) => heading.textContent?.trim() === "Collaborators");
+    collaboratorsHeading?.closest(".directors-section")?.remove();
+  }
+
   for (const image of template.content.querySelectorAll<HTMLImageElement>("img")) {
     image.loading = "lazy";
     image.decoding = "async";
+  }
+  for (const image of template.content.querySelectorAll<HTMLImageElement>(".nav-logo, .image-5")) {
+    image.loading = "eager";
+    image.fetchPriority = "high";
   }
 
   for (const frame of template.content.querySelectorAll<HTMLIFrameElement>("iframe[src]")) {
@@ -290,7 +315,7 @@ function installDeferredMedia(root: Element): () => void {
         element.pause();
       }
     }
-  }, { rootMargin: "800px 0px" });
+  }, { rootMargin: "0px" });
 
   media.forEach((element) => observer.observe(element));
   return () => observer.disconnect();
@@ -418,7 +443,9 @@ function useCurrentLocation(): CurrentLocation {
 
 export default function App() {
   const { path, search } = useCurrentLocation();
-  const [manifest, setManifest] = useState<Manifest | null>(null);
+  const [manifest, setManifest] = useState<Manifest | null>(() => (
+    path === "/" ? initialHomeManifest : null
+  ));
   const [assetMap, setAssetMap] = useState<Record<string, string> | null>(
     import.meta.env.PROD ? {} : null,
   );
@@ -461,17 +488,22 @@ export default function App() {
     let cancelled = false;
     setError("");
     setHtml("");
-    fetch(snapshot.file)
+    const snapshotFile = import.meta.env.PROD
+      ? snapshot.file.replace(/\.html$/, "")
+      : snapshot.file;
+    fetch(snapshotFile)
       .then((response) => {
         if (!response.ok) throw new Error(`Page request failed (${response.status})`);
         return response.text();
       })
-      .then((content) => { if (!cancelled) setHtml(prepareRecoveredHtml(content, assetMap)); })
+      .then((content) => {
+        if (!cancelled) setHtml(prepareRecoveredHtml(content, assetMap, path));
+      })
       .catch((reason: unknown) => {
         if (!cancelled) setError(reason instanceof Error ? reason.message : "Unable to load this page");
       });
     return () => { cancelled = true; };
-  }, [assetMap, manifest, snapshot]);
+  }, [assetMap, manifest, path, snapshot]);
 
   useEffect(() => {
     document.body.className = snapshot?.bodyClass ?? "body-black";
@@ -491,12 +523,6 @@ export default function App() {
     }
     const headers = [...root.querySelectorAll(".navbar-no-shadow")];
     for (const duplicate of headers.slice(1)) duplicate.remove();
-
-    if (path === "/") {
-      const collaboratorsHeading = [...root.querySelectorAll<HTMLElement>(".h2")]
-        .find((heading) => heading.textContent?.trim() === "Collaborators");
-      collaboratorsHeading?.closest(".directors-section")?.remove();
-    }
 
     const navMenu = root.querySelector<HTMLElement>(".w-nav-menu");
     if (navMenu && !navMenu.id) navMenu.id = "eo2-primary-navigation";
