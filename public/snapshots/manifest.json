@@ -1,0 +1,322 @@
+{
+  "/about-us": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/about-us.fragment.html",
+    "title": "Webflow"
+  },
+  "/cms-categories-template": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/cms-categories-template.fragment.html",
+    "title": "Webflow"
+  },
+  "/cms-events-template": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/cms-events-template.fragment.html",
+    "title": "Webflow"
+  },
+  "/cms-films-template": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/cms-films-template.fragment.html",
+    "title": "Webflow"
+  },
+  "/cms-team-template": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/cms-team-template.fragment.html",
+    "title": "Webflow"
+  },
+  "/contact-us": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/contact-us.fragment.html",
+    "title": "Webflow"
+  },
+  "/events": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events.fragment.html",
+    "title": "Webflow"
+  },
+  "/featured-events": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/featured-events.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/all": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/branded-commercials": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-branded-commercials.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/music-video": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-music-video.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/ott": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-ott.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/unscripted": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-unscripted.fragment.html",
+    "title": "Webflow"
+  },
+  "/": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/index.fragment.html",
+    "title": "Webflow"
+  },
+  "/our-backyard": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/our-backyard.fragment.html",
+    "title": "Webflow"
+  },
+  "/404": {
+    "bodyClass": "",
+    "file": "/snapshots/404.fragment.html",
+    "title": "404 - Page not found"
+  },
+  "/films/all?be55e1e7_page=2": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all-page-2.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/all?be55e1e7_page=3": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all-page-3.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/all?be55e1e7_page=4": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all-page-4.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/all?be55e1e7_page=5": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all-page-5.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/all?be55e1e7_page=6": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all-page-6.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/all?be55e1e7_page=7": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all-page-7.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/all?be55e1e7_page=8": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all-page-8.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/all?be55e1e7_page=9": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-all-page-9.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/branded-commercials?8968c47c_page=2": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-branded-commercials-page-2.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/branded-commercials?8968c47c_page=3": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-branded-commercials-page-3.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/branded-commercials?8968c47c_page=4": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-branded-commercials-page-4.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/music-video?ed88f21a_page=2": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-music-video-page-2.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/music-video?ed88f21a_page=3": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-music-video-page-3.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/ott?506f85bc_page=2": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-ott-page-2.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/ott?506f85bc_page=3": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-ott-page-3.fragment.html",
+    "title": "Webflow"
+  },
+  "/films/unscripted?597b2dbb_page=2": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-unscripted-page-2.fragment.html",
+    "title": "Webflow"
+  },
+  "/events/featured": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events.fragment.html",
+    "title": "Webflow"
+  },
+  "/events-collection/100-pipers": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--100-pipers.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/asus-rog-launch": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--asus-rog-launch.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/asus-zenfestival": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--asus-zenfestival.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/asus-zenfone-2-launch": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--asus-zenfone-2-launch.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/asus-zenvolution-2016": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--asus-zenvolution-2016.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/bath-and-body-works": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--bath-and-body-works.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/blenders-pride-fashion-nights": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--blenders-pride-fashion-nights.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/blenders-pride-magical-nights": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--blenders-pride-magical-nights.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/ddecor-dassist": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--ddecor-dassist.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/event-2": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--event-2.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/event-2-copy": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--event-2-copy.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/event-3-copy": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--event-3-copy.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/john-wick-chapter-4": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--john-wick-chapter-4.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/kerastase-360": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--kerastase-360.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/lakme-micellar": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--lakme-micellar.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/loreal-cpd-conference": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--loreal-cpd-conference.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/loreal-international-masterclasses": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--loreal-international-masterclasses.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/loreal-ppd-conference": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--loreal-ppd-conference.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/matrix": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--matrix.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/matrix-hair-transformers": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--matrix-hair-transformers.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/one8-select-launch": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--one8-select-launch.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/rado": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--rado.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/tigi-bed-head-backstage-heroes-17": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--tigi-bed-head-backstage-heroes-17.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/vaseline-cremedelacreme": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--vaseline-cremedelacreme.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/events-collection/youtube-fanfest": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/events-collection--youtube-fanfest.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/films-collection/bumble-x-kindness-is-sexy-ft-ark": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-collection--bumble-x-kindness-is-sexy-ft-ark.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/films-collection/coke-studio-global-afroto-7ala": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-collection--coke-studio-global-afroto-7ala.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/films-collection/directors-cut-signature-green-vibes-festival-x-ayushman-khurrana-ft-amninder-sahu-universal-music-group": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-collection--directors-cut-signature-green-vibes-festival-x-ayushman-khurrana-ft-amninder-sahu-universal-music-group.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/films-collection/marvel-x-guardians-of-the-galaxy-promo": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-collection--marvel-x-guardians-of-the-galaxy-promo.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/films-collection/netflix-dhamaka-mood": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-collection--netflix-dhamaka-mood.fragment.html",
+    "title": "EO2 EXP"
+  },
+  "/films-collection/netflix-x-boat": {
+    "bodyClass": "body-black",
+    "file": "/snapshots/films-collection--netflix-x-boat.fragment.html",
+    "title": "EO2 EXP"
+  }
+}

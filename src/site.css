@@ -1,0 +1,478 @@
+@import url("/snapshots/eo2.webflow.shared.8eb4a67d9.css");
+
+@font-face {
+  font-family: "stolzl";
+  src: url("/recovered-assets/fonts/stolzl-300.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Graphik";
+  src: url("/recovered-assets/fonts/Graphik-Regular-Web.5a0c1a002e.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Graphik";
+  src: url("/recovered-assets/fonts/Graphik-Medium-Web.abf6e1188f.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "stolzl";
+  src: url("/recovered-assets/fonts/stolzl-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "stolzl";
+  src: url("/recovered-assets/fonts/stolzl-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "stolzl";
+  src: url("/recovered-assets/fonts/stolzl-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color: #fff;
+  background: #050505;
+  font-family: stolzl, "Helvetica Neue", Arial, sans-serif;
+  font-synthesis: none;
+}
+
+html {
+  background: #050505;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  overflow-x: hidden;
+  font-family: stolzl, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+body:not(.nav-open) {
+  overflow-y: auto !important;
+}
+
+body,
+body.body-black,
+.body-black {
+  cursor: auto !important;
+}
+
+a,
+button,
+input[type="submit"],
+[role="button"] {
+  cursor: pointer !important;
+}
+
+button,
+input,
+textarea {
+  font-family: stolzl, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid #ff493d;
+  outline-offset: 4px;
+}
+
+.page-loader-container,
+.cursor-wrapper,
+.showreel-modal,
+iframe[src*="stripe"],
+iframe[src*="paypal"] {
+  display: none !important;
+}
+
+.recovered-page {
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+.recovery-state {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+/* Exact public Webflow 404 fallback. The terminated Designer cannot open its
+   utility canvas, so this is sourced from the still-rendering eo2.webflow.io
+   missing-path response. */
+.utility-wrapper,
+.utility-wrapper * {
+  box-sizing: border-box;
+}
+
+.utility-wrapper {
+  display: flex;
+  width: 100vw;
+  max-width: 100%;
+  min-height: 100vh;
+  max-height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  color: #000;
+  font-family: Graphik, sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.utility-container {
+  display: flex;
+  width: 90%;
+  height: 100%;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-top: 5%;
+  padding-bottom: 5%;
+}
+
+.text-mono {
+  font-family: "Roboto Mono", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.utility-content {
+  max-width: 580px;
+  margin-top: 60px;
+  margin-bottom: 60px;
+}
+
+.utility-content h1 {
+  margin-top: 0;
+  margin-bottom: 0.4em;
+  color: #000;
+  font-family: Graphik, sans-serif;
+  font-size: 3.125rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.utility-content p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+/* Webflow positions this shell through its runtime. Keep the same overlay
+   placement while React provides the interaction layer. */
+.navbar-no-shadow {
+  position: absolute !important;
+  inset: 0 0 auto !important;
+  z-index: 100 !important;
+  width: 100%;
+}
+
+body.nav-open {
+  overflow: hidden;
+}
+
+.nav-menu-wrapper.is-open {
+  display: block !important;
+}
+
+.copied {
+  display: block !important;
+  width: 0;
+  overflow: visible;
+  visibility: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.contact-wrap.is-copied .copied {
+  visibility: visible;
+  opacity: 1;
+}
+
+.eo2-contact-page {
+  isolation: isolate;
+}
+
+.eo2-contact-page .navbar-no-shadow {
+  position: relative !important;
+}
+
+.copy-button,
+.eo2-showreel-trigger {
+  cursor: pointer !important;
+}
+
+.eo2-events-index .eo2-event-tab {
+  cursor: pointer;
+}
+
+.eo2-events-index .eo2-event-tab[aria-selected="true"] {
+  border-bottom-color: currentColor;
+}
+
+.scroll > .camera .frame {
+  will-change: transform;
+}
+
+.eo2-events-back {
+  display: inline-flex;
+  min-height: 44px;
+  margin-bottom: 24px;
+  align-items: center;
+  align-self: center;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.eo2-events-back::before {
+  margin-right: 10px;
+  content: "\2190";
+  font-size: 18px;
+}
+
+.eo2-events-back:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.eo2-film-detail .hero-btn.back-button {
+  z-index: 20;
+  display: inline-flex !important;
+  min-height: 44px;
+  padding: 0.65rem 1.25rem;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.eo2-showreel {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 64px);
+  background: rgba(0, 0, 0, 0.96);
+}
+
+.eo2-showreel video {
+  width: min(100%, 1440px);
+  max-height: calc(100vh - 80px);
+  object-fit: contain;
+}
+
+.eo2-showreel-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 1;
+  min-width: 72px;
+  min-height: 42px;
+  border: 1px solid #fff;
+  border-radius: 999px;
+  background: #000;
+  color: #fff;
+}
+
+/* Recovered Webflow interaction layer. The loader uses the archived EO2 GIF
+   and follows Webflow's original 700ms upward page-exit motion. */
+.eo2-site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  background: #000;
+  transform: translate3d(0, 0, 0);
+}
+
+.eo2-site-loader[hidden] {
+  display: none !important;
+}
+
+.eo2-site-loader img {
+  display: block;
+  width: min(497px, 100vw);
+  max-width: 100%;
+  height: auto;
+}
+
+.eo2-site-loader.is-exiting {
+  transform: translate3d(0, -100vh, 0);
+  transition: transform 240ms ease-out;
+}
+
+.eo2-latest-film-link,
+.eo2-latest-film-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.collection-item-6[data-latest-work] .thumbnail-image-container {
+  aspect-ratio: 16 / 9;
+}
+
+.eo2-latest-film-link {
+  position: absolute;
+  inset: 0;
+}
+
+.eo2-latest-film-image {
+  object-fit: cover;
+}
+
+
+@media (hover: hover) and (pointer: fine) and (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  html.eo2-cursor-enabled,
+  html.eo2-cursor-enabled body,
+  html.eo2-cursor-enabled body * {
+    cursor: none !important;
+  }
+
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready {
+    display: flex !important;
+    visibility: hidden;
+    pointer-events: none !important;
+  }
+
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready.is-visible {
+    visibility: visible;
+  }
+
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready > .cursor {
+    will-change: transform;
+  }
+
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready .cursor-image.cursor,
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready .hover-image.hover,
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready .view-image.view {
+    display: none !important;
+  }
+
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready[data-eo2-cursor-state="cursor"] .cursor-image.cursor,
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready[data-eo2-cursor-state="hover"] .hover-image.hover,
+  html.eo2-cursor-enabled .cursor-wrapper.eo2-cursor-ready[data-eo2-cursor-state="view"] .view-image.view {
+    display: block !important;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .w-nav-button {
+    z-index: 1001;
+  }
+
+  .nav-menu-wrapper.is-open {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+  }
+
+}
+
+@media screen and (max-width: 640px) {
+
+  .eo2-event-detail .herosection {
+    padding-top: 7.5rem !important;
+  }
+
+  .eo2-event-detail .hero-heading-wrapper--films.events {
+    margin-top: 0 !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .eo2-event-detail .hero-heading-wrap {
+    width: 100%;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .eo2-event-detail .div-block-93 {
+    margin-top: 0 !important;
+  }
+
+  .eo2-event-detail .h1-2 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: clamp(1.8rem, 9vw, 2.5rem) !important;
+  }
+
+  .eo2-events-back {
+    margin-bottom: 16px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .utility-container {
+    width: 85%;
+    padding-top: 10%;
+    padding-bottom: 10%;
+  }
+
+  .utility-content h1 {
+    font-size: 2.25rem;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .utility-content h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .eo2-site-loader.is-exiting {
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
