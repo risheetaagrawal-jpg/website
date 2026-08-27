@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react";
 import { mapRecoveredAssets } from "./assets";
 import { selectedWorkStudios, type SelectedWorkProject } from "./selectedWorkData";
+import snapshotManifest from "virtual:eo2-snapshot-manifest";
 import "./site.css";
 
 type Snapshot = { bodyClass: string; file: string; title: string };
-type Manifest = Record<string, Snapshot>;
 type CurrentLocation = { path: string; search: string };
 
-const initialHomeManifest: Manifest = {
-  "/": {
-    bodyClass: "body-black",
-    file: "/snapshots/index.fragment.html",
-    title: "Webflow",
-  },
-};
+const snapshotCache = new Map<string, Promise<string>>();
+const initialSnapshot = window.__eo2InitialSnapshot;
+if (initialSnapshot) snapshotCache.set(initialSnapshot.file, initialSnapshot.promise);
+
+function loadSnapshot(file: string): Promise<string> {
+  const cached = snapshotCache.get(file);
+  if (cached) return cached;
+  const request = fetch(file)
+    .then((response) => {
+      if (!response.ok) throw new Error(`Page request failed (${response.status})`);
+      return response.text();
+    })
+    .catch((reason: unknown) => {
+      snapshotCache.delete(file);
+      throw reason;
+    });
+  snapshotCache.set(file, request);
+  return request;
+}
 
 const latestFilmProjects = selectedWorkStudios
   .filter((studio) => studio.name !== "Live Events")
@@ -268,6 +280,37 @@ function prepareRecoveredHtml(
   return template.innerHTML;
 }
 
+function deferredMediaRootMargin(): string {
+  return window.matchMedia("(max-width: 767px)").matches ? "250px 0px" : "600px 0px";
+}
+
+function installDeferredBackgrounds(root: Element): () => void {
+  const elements = [...root.querySelectorAll<HTMLElement>("[data-eo2-background]")];
+  if (elements.length === 0) return () => undefined;
+
+  const loadBackground = (element: HTMLElement) => {
+    const source = element.dataset.eo2Background;
+    if (!source) return;
+    element.style.backgroundImage = `url("${source}")`;
+    delete element.dataset.eo2Background;
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    elements.forEach(loadBackground);
+    return () => undefined;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting || !(entry.target instanceof HTMLElement)) continue;
+      loadBackground(entry.target);
+      observer.unobserve(entry.target);
+    }
+  }, { rootMargin: deferredMediaRootMargin() });
+  elements.forEach((element) => observer.observe(element));
+  return () => observer.disconnect();
+}
+
 function installDeferredMedia(root: Element): () => void {
   const media = [...root.querySelectorAll<HTMLIFrameElement | HTMLVideoElement>(
     "iframe[data-eo2-src], video[data-eo2-src], video:has(source[data-eo2-src])",
@@ -315,7 +358,7 @@ function installDeferredMedia(root: Element): () => void {
         element.pause();
       }
     }
-  }, { rootMargin: "0px" });
+  }, { rootMargin: deferredMediaRootMargin() });
 
   media.forEach((element) => observer.observe(element));
   return () => observer.disconnect();
@@ -370,11 +413,29 @@ function readCurrentLocation(): CurrentLocation {
   };
 }
 
+function resolveSnapshot(path: string, search: string): Snapshot | null {
+  const resolvedPath = featuredEventListingPaths.has(path) ? "/events" : path;
+  return snapshotManifest[`${resolvedPath}${search}`]
+    ?? snapshotManifest[resolvedPath]
+    ?? snapshotManifest["/404"]
+    ?? null;
+}
+
 function useCurrentLocation(): CurrentLocation {
   const [location, setLocation] = useState(readCurrentLocation);
 
   useEffect(() => {
     const onPopState = () => setLocation(readCurrentLocation());
+    const onNavigationIntent = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const anchor = target.closest<HTMLAnchorElement>("a[href]");
+      if (!anchor || anchor.target === "_blank") return;
+      const destination = new URL(anchor.href, window.location.href);
+      if (destination.origin !== window.location.origin) return;
+      const snapshot = resolveSnapshot(normalizePath(destination.pathname), destination.search);
+      if (snapshot) void loadSnapshot(snapshot.file).catch(() => undefined);
+    };
     const onClick = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
@@ -433,9 +494,15 @@ function useCurrentLocation(): CurrentLocation {
     };
     window.addEventListener("popstate", onPopState);
     document.addEventListener("click", onClick);
+    document.addEventListener("pointerover", onNavigationIntent, { passive: true });
+    document.addEventListener("focusin", onNavigationIntent);
+    document.addEventListener("touchstart", onNavigationIntent, { passive: true });
     return () => {
       window.removeEventListener("popstate", onPopState);
       document.removeEventListener("click", onClick);
+      document.removeEventListener("pointerover", onNavigationIntent);
+      document.removeEventListener("focusin", onNavigationIntent);
+      document.removeEventListener("touchstart", onNavigationIntent);
     };
   }, []);
   return location;
@@ -443,9 +510,6 @@ function useCurrentLocation(): CurrentLocation {
 
 export default function App() {
   const { path, search } = useCurrentLocation();
-  const [manifest, setManifest] = useState<Manifest | null>(() => (
-    path === "/" ? initialHomeManifest : null
-  ));
   const [assetMap, setAssetMap] = useState<Record<string, string> | null>(
     import.meta.env.PROD ? {} : null,
   );
@@ -454,56 +518,35 @@ export default function App() {
   const [showreelOpen, setShowreelOpen] = useState(false);
 
   useEffect(() => {
-    const requests = import.meta.env.PROD
-      ? [fetch("/snapshots/manifest.json")]
-      : [fetch("/snapshots/manifest.json"), fetch("/recovered-assets/map.json")];
-    Promise.all(requests)
-      .then(async ([manifestResponse, assetResponse]) => {
-        if (!manifestResponse.ok) throw new Error(`Manifest request failed (${manifestResponse.status})`);
-        if (assetResponse && !assetResponse.ok) throw new Error(`Asset map request failed (${assetResponse.status})`);
-        const nextManifest = await manifestResponse.json() as Manifest;
-        const nextAssetMap = assetResponse
-          ? await assetResponse.json() as Record<string, string>
-          : {};
-        return [nextManifest, nextAssetMap] as const;
+    if (import.meta.env.PROD) return;
+    fetch("/recovered-assets/map.json")
+      .then((response) => {
+        if (!response.ok) throw new Error(`Asset map request failed (${response.status})`);
+        return response.json() as Promise<Record<string, string>>;
       })
-      .then(([nextManifest, nextAssetMap]) => {
-        setManifest(nextManifest);
-        setAssetMap(nextAssetMap);
-      })
+      .then(setAssetMap)
       .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Unable to load site manifest"));
   }, []);
 
-  const resolvedPath = featuredEventListingPaths.has(path) ? "/events" : path;
-  const snapshot = manifest?.[`${resolvedPath}${search}`]
-    ?? manifest?.[resolvedPath]
-    ?? manifest?.["/404"]
-    ?? null;
+  const snapshot = resolveSnapshot(path, search);
 
   useEffect(() => {
     if (!snapshot || !assetMap) {
-      if (manifest) setHtml("");
+      setHtml("");
       return;
     }
     let cancelled = false;
     setError("");
     setHtml("");
-    const snapshotFile = import.meta.env.PROD
-      ? snapshot.file.replace(/\.html$/, "")
-      : snapshot.file;
-    fetch(snapshotFile)
-      .then((response) => {
-        if (!response.ok) throw new Error(`Page request failed (${response.status})`);
-        return response.text();
-      })
+    loadSnapshot(snapshot.file)
       .then((content) => {
-        if (!cancelled) setHtml(prepareRecoveredHtml(content, assetMap, path));
+        if (!cancelled) setHtml(import.meta.env.PROD ? content : prepareRecoveredHtml(content, assetMap, path));
       })
       .catch((reason: unknown) => {
         if (!cancelled) setError(reason instanceof Error ? reason.message : "Unable to load this page");
       });
     return () => { cancelled = true; };
-  }, [assetMap, manifest, path, snapshot]);
+  }, [assetMap, path, snapshot]);
 
   useEffect(() => {
     document.body.className = snapshot?.bodyClass ?? "body-black";
@@ -696,10 +739,12 @@ export default function App() {
       };
     }
 
+    const removeDeferredBackgrounds = installDeferredBackgrounds(root);
     const removeDeferredMedia = installDeferredMedia(root);
     const removeHorizontalScrollEffects = installHorizontalScrollEffects(root);
     return () => {
       removeDeferredMedia();
+      removeDeferredBackgrounds();
       removeHorizontalScrollEffects();
       if (filmTabScrollFrame) window.cancelAnimationFrame(filmTabScrollFrame);
       filmTabScrollTimers.forEach((timer) => window.clearTimeout(timer));
@@ -755,7 +800,7 @@ export default function App() {
   }, []);
 
   if (error) return <main className="recovery-state"><p>{error}</p><a href="/">Return home</a></main>;
-  if (!manifest || !assetMap || (snapshot && !html)) return <main className="recovery-state"><p>Loading EO2 EXP…</p></main>;
+  if (!assetMap || (snapshot && !html)) return <main className="recovery-state"><p>Loading EO2 EXP…</p></main>;
   if (!snapshot) return <main className="recovery-state"><p>That page has not been recovered yet.</p><a href="/">Return home</a></main>;
   return <>
     <div
