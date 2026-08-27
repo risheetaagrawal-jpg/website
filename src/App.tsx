@@ -114,6 +114,36 @@ const filmDetailByTitle: Record<string, string> = {
   "Bumble x Kindness is sexy ft. ARK": "/films-collection/bumble-x-kindness-is-sexy-ft-ark",
 };
 
+const filmPosterByTitle: Record<string, string> = {
+  "Boat x Netflix Stream Edition": "/selected-work/boat.jpg",
+  "Marvel x Guardians of the Galaxy": "/selected-work/guardians-of-the-galaxy.jpg",
+  "Netflix Dhamaka Mood Promo": "/selected-work/dhamaka-mood-promo.jpg",
+  "Coke Studio Global | Afroto | 7ALA": "/selected-work/coke-studio-global-7ala.jpg",
+  "Directors Cut | Signature Green Vibes Festival x Ayushman Khurrana FT. Amninder Sahu":
+    "/selected-work/signature-green-vibes.jpg",
+  "Bumble x Kindness is sexy ft. ARK": "/selected-work/kindness-is-sexy.jpg",
+  "Jupiter x End of Shady Loans | Directors Cut": "/selected-work/jupiter-end-of-shady-loans.jpg",
+  "Netflix Tudum India Spotlight 2021": "/selected-work/netflix-tudum-india-spotlight.jpg",
+  "Meet the Naidus | Rana Naidu | Netflix": "/selected-work/meet-naidus.jpg",
+  "Marvel x Wakanda Forever": "/selected-work/wakanda-forever.jpg",
+  "Jhanvni and her Problems | Rana Naidu Promo | Netflix": "/selected-work/rana-naidu-problems.jpg",
+  "Netflix Tudum - India Spotlight (Radhika Apte)": "/selected-work/tudum-radhika-apte.jpg",
+  "Netflix x Class Promo": "/selected-work/netflix-class-promo.jpg",
+  "Sharma Ji Namkeen Announcement Film": "/selected-work/sharma-ji-namkeen.jpg",
+  "Boost x Stamina Stars": "/selected-work/boost-stamina-stars.jpg",
+  "L’Oreal Professionnel Paris French Balayage Squad | SuperCut": "/selected-work/loreal-french-balayage.jpg",
+  "Boost | Trust your stamina | Directors Cut": "/selected-work/boost-trust-stamina.jpg",
+  "The Archies | Netflix x Starbucks x Meet Manja": "/selected-work/archies-starbucks.jpg",
+  "Absolut Ft. Rajakumari - Rani Cypher": "/selected-work/rani-cypher.jpg",
+  "Husn | Anuv Jain (Official Music Video)": "/selected-work/anuv-jain-husn.jpg",
+  "The Netflix Crossover Music Video (Mismatched x Kota Factory)": "/selected-work/netflix-crossover.jpg",
+  "AP Dhillon | First Of a Kind | Docu Series | India Production Services":
+    "/selected-work/ap-dhillon-first-of-kind.jpg",
+  "Netflix x Indian Squid Games - Part 1": "/selected-work/indian-squid-games.jpg",
+  "Netflix - We recreated Rohit Shetty Stunts": "/selected-work/rohit-shetty-stunts.jpg",
+  "AP Dhillon x Prime Video Promo | An unexpected surprise": "/selected-work/ap-dhillon-prime-promo.jpg",
+};
+
 function filmListingPath(path: string): boolean {
   return path === "/films/all"
     || path === "/films/ott"
@@ -179,12 +209,15 @@ function mountFilmCardThumbnail(
   image.alt = options.alt;
   image.loading = "lazy";
   image.decoding = "async";
-  image.sizes = "(max-width: 991px) 85vw, (max-width: 1400px) 46vw, 620px";
+  image.sizes = "(max-width: 767px) 82vw, (max-width: 1199px) 46vw, 30vw";
   link.append(image);
   container.replaceChildren(link);
 }
 
 function hydrateFilmListingCards(root: Element): void {
+  const listing = root.querySelector<HTMLElement>(".collection-list-7");
+  if (listing) listing.setAttribute("aria-label", "Film projects");
+
   for (const card of root.querySelectorAll<HTMLElement>(".collection-item-6.w-dyn-item")) {
     const thumbnail = card.querySelector<HTMLElement>(".thumbnail-image-container");
     if (!thumbnail) continue;
@@ -194,7 +227,8 @@ function hydrateFilmListingCards(root: Element): void {
     const iframe = thumbnail.querySelector<HTMLIFrameElement>("iframe");
     if (!iframe) continue;
 
-    const { poster, vimeoHref } = extractFilmEmbedMeta(iframe);
+    const { poster: recoveredPoster, vimeoHref } = extractFilmEmbedMeta(iframe);
+    const poster = filmPosterByTitle[title] ?? recoveredPoster;
     if (!poster) continue;
 
     const detailHref = filmDetailByTitle[title];
@@ -218,7 +252,11 @@ function hydrateLatestSelectedWork(root: Element, path: string): void {
   if (path === "/films/all") {
     const filmGrid = [...root.querySelectorAll<HTMLElement>(".w-dyn-items")]
       .find((items) => items.querySelector(":scope > .collection-item-6.w-dyn-item .thumbnail-image-container"));
-    if (filmGrid) prependLatestCards(filmGrid, latestFilmProjects);
+    if (filmGrid) {
+      prependLatestCards(filmGrid, latestFilmProjects);
+      filmGrid.scrollLeft = 0;
+      window.requestAnimationFrame(() => filmGrid.scrollTo({ left: 0, behavior: "instant" }));
+    }
   }
 
   if (filmListingPath(path)) {
@@ -833,6 +871,10 @@ export default function App() {
       // The terminated Webflow backend cannot receive submissions. Keep the
       // fields usable while making that handoff explicit in the UI.
       form.dataset.externalBackend = "required";
+      for (const field of form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea")) {
+        const label = field.placeholder.trim();
+        if (label && !field.getAttribute("aria-label")) field.setAttribute("aria-label", label);
+      }
       const submit = form.querySelector<HTMLInputElement>('input[type="submit"]');
       if (submit) {
         submit.value = "";

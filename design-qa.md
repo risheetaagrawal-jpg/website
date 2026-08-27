@@ -15,10 +15,23 @@
 
 ## New work inside the Webflow system
 
-- `/films/all` prepends 16 newer film, campaign, and editorial projects using the existing full-viewport Webflow film-card structure and 16:9 crop.
+- `/films/all` prepends 16 newer film, campaign, and editorial projects in a responsive 16:9 card system: a three-column long grid on desktop, two columns on tablet, and a snap carousel with the next card peeking in on phones.
+- Film titles sit below their thumbnails instead of covering the artwork. Confirmed recovered category listings use local 1280px poster captures so cross-origin Vimeo thumbnails cannot fail or appear soft.
 - `/events` prepends 8 newer live-event projects using the existing three-column Webflow event-card structure, hover arrows, overlay typography, and responsive grid.
 - New cards use local artwork and open the published Vimeo, YouTube, or Instagram destination in a new tab.
-- The video files themselves remain deferred; no placeholder player or alternate card design was introduced.
+- The video files themselves remain deferred; listing cards link to the recovered detail or published destination without adding replacement players.
+
+## Films and cross-page quality audit — 27 August 2026
+
+1. **Films phone listing — fixed and passed.** The carousel starts on the first project, shows one 82vw card plus a preview of the next, keeps every title below its thumbnail, and exposes the list as `Film projects` to assistive technology.
+2. **Films desktop listing — fixed and passed.** The previous full-width stack is now a three-column grid at 1440px. Card width is 392px, so the smallest 594px artwork is no longer enlarged beyond its source resolution.
+3. **Film categories — fixed and passed.** All, OTT, Branded Commercials, Music Video, and Unscripted render only same-origin poster artwork. No newer-film category assignments were inferred or changed.
+4. **Footer — fixed and passed across audited routes.** The recovered image dimensions had forced the EO2 footer mark to remain 853px tall. It now respects its aspect ratio at 140 × 99px on phones and 160 × 113px on desktop.
+5. **Home, Events, About, Backyard, and Contact — passed responsive visual checks.** No audited route produced horizontal document overflow or a broken visible image at 390 × 844.
+6. **Contact form labels — improved.** The recovered placeholder-only fields now expose matching accessible names while retaining the explicit email fallback for unavailable Webflow form delivery.
+7. **Known external-media limit — unchanged.** The Our Backyard Vimeo/Embedly player can show its provider loading state in local preview. The dedicated video recovery remains deferred.
+
+Evidence and the concise audit report are saved in `audit-evidence/films-quality-audit-2026-08-27/`.
 
 ## Browser checks — 24 August 2026
 
