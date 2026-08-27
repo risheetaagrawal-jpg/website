@@ -492,6 +492,12 @@ export default function App() {
     const headers = [...root.querySelectorAll(".navbar-no-shadow")];
     for (const duplicate of headers.slice(1)) duplicate.remove();
 
+    if (path === "/") {
+      const collaboratorsHeading = [...root.querySelectorAll<HTMLElement>(".h2")]
+        .find((heading) => heading.textContent?.trim() === "Collaborators");
+      collaboratorsHeading?.closest(".directors-section")?.remove();
+    }
+
     const navMenu = root.querySelector<HTMLElement>(".w-nav-menu");
     if (navMenu && !navMenu.id) navMenu.id = "eo2-primary-navigation";
     for (const menuButton of root.querySelectorAll<HTMLElement>(".w-nav-button")) {
