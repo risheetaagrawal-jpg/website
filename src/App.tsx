@@ -49,21 +49,17 @@ function populateRecoveredCard(card: HTMLElement, project: SelectedWorkProject):
 
   const filmThumbnail = card.querySelector<HTMLElement>(".thumbnail-image-container");
   if (filmThumbnail) {
-    const link = document.createElement("a");
-    link.className = "eo2-latest-film-link";
-    link.href = project.href;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.setAttribute("aria-label", `Watch ${project.title} for ${project.client} on ${project.platform}`);
-    const image = document.createElement("img");
-    image.className = "eo2-latest-film-image";
-    image.src = project.image;
-    image.alt = `${project.title} — ${project.client}`;
-    image.loading = "lazy";
-    link.append(image);
-    filmThumbnail.replaceChildren(link);
+    mountFilmCardThumbnail(filmThumbnail, {
+      alt: `${project.title} — ${project.client}`,
+      href: project.href,
+      imageSrc: project.image,
+      label: `Watch ${project.title} for ${project.client} on ${project.platform}`,
+      openInNewTab: true,
+    });
     const title = card.querySelector<HTMLElement>(".text-block-60");
     if (title) title.textContent = `${project.client} x ${project.title}`;
+    const overlay = card.querySelector<HTMLElement>(".text-div-absolute");
+    overlay?.classList.add("visible");
     return;
   }
 
@@ -108,11 +104,125 @@ function prependLatestCards(container: HTMLElement, projects: SelectedWorkProjec
   container.dataset.latestWorkHydrated = "true";
 }
 
+const filmDetailByTitle: Record<string, string> = {
+  "Boat x Netflix Stream Edition": "/films-collection/netflix-x-boat",
+  "Marvel x Guardians of the Galaxy": "/films-collection/marvel-x-guardians-of-the-galaxy-promo",
+  "Netflix Dhamaka Mood Promo": "/films-collection/netflix-dhamaka-mood",
+  "Coke Studio Global | Afroto | 7ALA": "/films-collection/coke-studio-global-afroto-7ala",
+  "Directors Cut | Signature Green Vibes Festival x Ayushman Khurrana FT. Amninder Sahu":
+    "/films-collection/directors-cut-signature-green-vibes-festival-x-ayushman-khurrana-ft-amninder-sahu-universal-music-group",
+  "Bumble x Kindness is sexy ft. ARK": "/films-collection/bumble-x-kindness-is-sexy-ft-ark",
+};
+
+function filmListingPath(path: string): boolean {
+  return path === "/films/all"
+    || path === "/films/ott"
+    || path === "/films/branded-commercials"
+    || path === "/films/music-video"
+    || path === "/films/unscripted";
+}
+
+function extractFilmEmbedMeta(iframe: HTMLIFrameElement): { poster: string | null; vimeoHref: string | null } {
+  const source = iframe.getAttribute("src")
+    ?? iframe.getAttribute("data-eo2-src")
+    ?? "";
+  let poster: string | null = null;
+  let vimeoHref: string | null = null;
+  try {
+    const parsed = new URL(source, window.location.origin);
+    const image = parsed.searchParams.get("image");
+    if (image) poster = image;
+    const embedded = parsed.searchParams.get("src") ?? parsed.searchParams.get("url");
+    if (embedded) {
+      const nested = new URL(embedded);
+      const videoMatch = nested.pathname.match(/\/video\/(\d+)/);
+      const id = videoMatch?.[1] ?? nested.pathname.match(/\/(\d+)/)?.[1];
+      if (id) vimeoHref = `https://vimeo.com/${id}`;
+      else if (nested.hostname.includes("vimeo.com")) vimeoHref = nested.href;
+    }
+  } catch {
+    const imageMatch = source.match(/[?&]image=([^&]+)/);
+    if (imageMatch) {
+      try {
+        poster = decodeURIComponent(imageMatch[1]);
+      } catch {
+        poster = imageMatch[1];
+      }
+    }
+    const idMatch = source.match(/player\.vimeo\.com(?:%2F|\/)video(?:%2F|\/)(\d+)/);
+    if (idMatch) vimeoHref = `https://vimeo.com/${idMatch[1]}`;
+  }
+  return { poster, vimeoHref };
+}
+
+function mountFilmCardThumbnail(
+  container: HTMLElement,
+  options: {
+    alt: string;
+    href: string;
+    imageSrc: string;
+    label: string;
+    openInNewTab: boolean;
+  },
+): void {
+  const link = document.createElement("a");
+  link.className = "eo2-film-card-link";
+  link.href = options.href;
+  if (options.openInNewTab) {
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+  }
+  link.setAttribute("aria-label", options.label);
+  const image = document.createElement("img");
+  image.className = "eo2-film-card-image";
+  image.src = options.imageSrc;
+  image.alt = options.alt;
+  image.loading = "lazy";
+  image.decoding = "async";
+  image.sizes = "(max-width: 991px) 85vw, (max-width: 1400px) 46vw, 620px";
+  link.append(image);
+  container.replaceChildren(link);
+}
+
+function hydrateFilmListingCards(root: Element): void {
+  for (const card of root.querySelectorAll<HTMLElement>(".collection-item-6.w-dyn-item")) {
+    const thumbnail = card.querySelector<HTMLElement>(".thumbnail-image-container");
+    if (!thumbnail) continue;
+    if (thumbnail.querySelector(".eo2-film-card-link, .eo2-latest-film-link")) continue;
+
+    const title = card.querySelector<HTMLElement>(".text-block-60")?.textContent?.trim() ?? "Film";
+    const iframe = thumbnail.querySelector<HTMLIFrameElement>("iframe");
+    if (!iframe) continue;
+
+    const { poster, vimeoHref } = extractFilmEmbedMeta(iframe);
+    if (!poster) continue;
+
+    const detailHref = filmDetailByTitle[title];
+    const href = detailHref ?? vimeoHref;
+    if (!href) continue;
+
+    mountFilmCardThumbnail(thumbnail, {
+      alt: title,
+      href,
+      imageSrc: poster,
+      label: detailHref ? `Open ${title}` : `Watch ${title} on Vimeo`,
+      openInNewTab: !detailHref,
+    });
+
+    const overlay = card.querySelector<HTMLElement>(".text-div-absolute");
+    overlay?.classList.add("visible");
+  }
+}
+
 function hydrateLatestSelectedWork(root: Element, path: string): void {
   if (path === "/films/all") {
     const filmGrid = [...root.querySelectorAll<HTMLElement>(".w-dyn-items")]
       .find((items) => items.querySelector(":scope > .collection-item-6.w-dyn-item .thumbnail-image-container"));
     if (filmGrid) prependLatestCards(filmGrid, latestFilmProjects);
+  }
+
+  if (filmListingPath(path)) {
+    hydrateFilmListingCards(root);
   }
 
   if (path === "/events" || path === "/events/featured") {
@@ -804,7 +914,7 @@ export default function App() {
   if (!snapshot) return <main className="recovery-state"><p>That page has not been recovered yet.</p><a href="/">Return home</a></main>;
   return <>
     <div
-      className={`recovered-page${path === "/events" || featuredEventListingPaths.has(path) ? " eo2-events-index" : ""}${path.startsWith("/events-collection/") ? " eo2-event-detail" : ""}${path.startsWith("/films-collection/") ? " eo2-film-detail" : ""}${path === "/contact-us" ? " eo2-contact-page" : ""}`}
+      className={`recovered-page${path === "/events" || featuredEventListingPaths.has(path) ? " eo2-events-index" : ""}${path.startsWith("/events-collection/") ? " eo2-event-detail" : ""}${filmListingPath(path) ? " eo2-films-index" : ""}${path.startsWith("/films-collection/") ? " eo2-film-detail" : ""}${path === "/contact-us" ? " eo2-contact-page" : ""}`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
     {showreelOpen && (

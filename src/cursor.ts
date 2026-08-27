@@ -40,7 +40,13 @@ const viewCursorSelector = [
 function recoveredCursorState(target: Element, root: HTMLElement): CursorState {
   const filmCollection = target.closest(".collection-list-7");
   if (filmCollection) {
-    return window.location.pathname === "/films/all" ? "view" : "hidden";
+    const path = window.location.pathname;
+    const onFilmListing = path === "/films/all"
+      || path === "/films/ott"
+      || path === "/films/branded-commercials"
+      || path === "/films/music-video"
+      || path === "/films/unscripted";
+    return onFilmListing ? "view" : "hidden";
   }
   if (target.closest(viewCursorSelector)) return "view";
   if (target.closest(handCursorSelector)) return "hover";
