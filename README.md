@@ -55,6 +55,6 @@ The manifest contains 64 route states across 48 unique paths, including 16 pagin
 ## Known limits
 
 - This is a source recovery, not Webflow's native paid-plan code export.
-- Webflow CMS editing and hosted form submission services are not included; the contact form now shows an explicit email fallback instead of pretending to submit.
+- Webflow CMS editing and hosted form submission services are not included; the contact form opens a pre-addressed `mailto:` draft to `rishabh@eo2exp.com` containing the visitor's completed fields.
 - Recovered non-video imagery and available local media are bundled. Third-party/Vimeo video playback remains external or deferred; the original embeds and recovered poster imagery are preserved for the later video pass.
 # website

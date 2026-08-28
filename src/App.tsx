@@ -11,6 +11,27 @@ const snapshotCache = new Map<string, Promise<string>>();
 const initialSnapshot = window.__eo2InitialSnapshot;
 if (initialSnapshot) snapshotCache.set(initialSnapshot.file, initialSnapshot.promise);
 
+const contactEmail = "rishabh@eo2exp.com";
+
+function buildContactMailto(form: HTMLFormElement): string {
+  const data = new FormData(form);
+  const email = String(data.get("email") ?? "").trim();
+  const firstName = String(data.get("First-Name") ?? "").trim();
+  const lastName = String(data.get("Last-Name") ?? "").trim();
+  const message = String(data.get("field") ?? "");
+  const fullName = [firstName, lastName].filter(Boolean).join(" ");
+  const subject = fullName ? `EO2 EXP enquiry from ${fullName}` : "EO2 EXP website enquiry";
+  const body = [
+    `First name: ${firstName}`,
+    `Last name: ${lastName}`,
+    `Email: ${email}`,
+    "",
+    "Message:",
+    message,
+  ].join("\r\n");
+  return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 function loadSnapshot(file: string): Promise<string> {
   const cached = snapshotCache.get(file);
   if (cached) return cached;
@@ -868,9 +889,9 @@ export default function App() {
     }
 
     for (const form of root.querySelectorAll<HTMLFormElement>("form")) {
-      // The terminated Webflow backend cannot receive submissions. Keep the
-      // fields usable while making that handoff explicit in the UI.
-      form.dataset.externalBackend = "required";
+      // The terminated Webflow backend cannot receive submissions, so hand
+      // the completed form to the visitor's email app instead.
+      form.dataset.delivery = "mailto";
       for (const field of form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea")) {
         const label = field.placeholder.trim();
         if (label && !field.getAttribute("aria-label")) field.setAttribute("aria-label", label);
@@ -883,11 +904,14 @@ export default function App() {
       }
       form.onsubmit = (event) => {
         event.preventDefault();
+        const mailto = buildContactMailto(form);
+        form.setAttribute("action", mailto);
         const status = form.parentElement?.querySelector<HTMLElement>(".w-form-done");
         if (status) {
           status.style.display = "block";
-          status.textContent = "Thanks — please email rishabh@eo2exp.com while the form connection is restored.";
+          status.textContent = `Opening your email app with your message addressed to ${contactEmail}.`;
         }
+        window.location.href = mailto;
       };
     }
 

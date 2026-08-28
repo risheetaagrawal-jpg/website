@@ -28,7 +28,7 @@
 3. **Film categories — fixed and passed.** All, OTT, Branded Commercials, Music Video, and Unscripted render only same-origin poster artwork. No newer-film category assignments were inferred or changed.
 4. **Footer — fixed and passed across audited routes.** The recovered image dimensions had forced the EO2 footer mark to remain 853px tall. It now respects its aspect ratio at 140 × 99px on phones and 160 × 113px on desktop.
 5. **Home, Events, About, Backyard, and Contact — passed responsive visual checks.** No audited route produced horizontal document overflow or a broken visible image at 390 × 844.
-6. **Contact form labels — improved.** The recovered placeholder-only fields now expose matching accessible names while retaining the explicit email fallback for unavailable Webflow form delivery.
+6. **Contact form labels and delivery — improved.** The recovered placeholder-only fields expose matching accessible names, and valid submissions open a pre-addressed email draft containing every completed field.
 7. **Known external-media limit — unchanged.** The Our Backyard Vimeo/Embedly player can show its provider loading state in local preview. The dedicated video recovery remains deferred.
 
 Evidence and the concise audit report are saved in `audit-evidence/films-quality-audit-2026-08-27/`.
@@ -45,7 +45,7 @@ Evidence and the concise audit report are saved in `audit-evidence/films-quality
 8. **Film filters — passed.** All, OTT, Branded Commercials, Music Video, and Unscripted remain reachable in the horizontally scrolling mobile control; the active category is centered on 320px screens and switching keeps the controls visible.
 9. **Pagination — passed.** Next and Previous controls navigate between all captured query states and preserve the correct category.
 10. **Mobile navigation — fixed and passed.** The menu scrolls independently, locks background scroll only while open, closes after navigation, and closes with Escape while returning focus to its toggle.
-11. **Contact path — passed with known backend limit.** Fields accept input and submission displays the explicit `rishabh@eo2exp.com` fallback because the terminated Webflow form service is unavailable.
+11. **Contact path — passed with mail-app delivery.** Fields accept input and valid submission opens an encoded draft to `rishabh@eo2exp.com` because the terminated Webflow form service is unavailable.
 12. **Keyboard/focus smoke check — passed.** Visible custom controls have focus treatment; event tabs, menu, copy controls, and showreel triggers expose keyboard behavior. This is a focused interaction check, not a full WCAG conformance audit.
 
 Evidence is saved in `audit-evidence/`, including the Lakmé before/after, film-detail back control, all core mobile templates, and the core-page contact sheet.
@@ -55,6 +55,6 @@ Evidence is saved in `audit-evidence/`, including the Lakmé before/after, film-
 - `/cms-categories-template`, `/cms-films-template`, and `/cms-team-template` are empty source captures. They are internal Webflow template URLs and are not linked from the public navigation.
 - The 16 newer film projects are present in **All** but do not have confirmed OTT / Branded Commercial / Music Video / Unscripted classifications. They should not be guessed into those filters.
 - Original third-party video embeds remain external and the dedicated local-video pass is still deferred.
-- Native Webflow CMS editing and hosted form delivery are unavailable; project updates are made in the React data/snapshots described in the README.
+- Native Webflow CMS editing and hosted form delivery are unavailable; the contact form uses the visitor's configured email app, and project updates are made in the React data/snapshots described in the README.
 
 final result: passed
