@@ -242,6 +242,35 @@ body.nav-open {
   border-bottom-color: currentColor;
 }
 
+.eo2-events-index .event-img-div::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.36);
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.eo2-events-index .event-img-div > .details-div,
+.eo2-events-index .event-img-div > .hover-div {
+  z-index: 2;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .eo2-events-index a:hover > .event-img-div::before,
+  .eo2-events-index a:focus-visible > .event-img-div::before {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eo2-events-index .event-img-div::before {
+    transition: none;
+  }
+}
+
 .scroll > .camera .frame {
   will-change: transform;
 }
