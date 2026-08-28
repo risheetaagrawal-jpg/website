@@ -61,6 +61,34 @@ function removeAttribute(tag: string, name: string): string {
   return tag.replace(new RegExp(`\\s${name}=(?:"[^"]*"|'[^']*')`, "i"), "");
 }
 
+function removeDivAncestorContainingText(html: string, text: string, ancestorClass: string): string {
+  const markerIndex = html.indexOf(`>${text}<`);
+  if (markerIndex === -1) return html;
+
+  const divTag = /<\/?div\b[^>]*>/gi;
+  const openDivs: Array<{ start: number; tag: string }> = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = divTag.exec(html)) && match.index < markerIndex) {
+    if (match[0].startsWith("</")) openDivs.pop();
+    else openDivs.push({ start: match.index, tag: match[0] });
+  }
+
+  const ancestor = [...openDivs].reverse().find(({ tag }) => (
+    (getAttribute(tag, "class") ?? "").split(/\s+/).includes(ancestorClass)
+  ));
+  if (!ancestor) return html;
+
+  divTag.lastIndex = ancestor.start;
+  let depth = 0;
+  while ((match = divTag.exec(html))) {
+    depth += match[0].startsWith("</") ? -1 : 1;
+    if (depth === 0) return html.slice(0, ancestor.start) + html.slice(divTag.lastIndex);
+  }
+
+  return html;
+}
+
 function imageGroupFor(source: string): ImageGroup | undefined {
   return imageGroups.get(source.replace(/\.(?:avif|gif|jpe?g|png|webp)(?:\?.*)?$/i, ""));
 }
@@ -162,8 +190,11 @@ function deferEmbeddedMedia(html: string): string {
   });
 }
 
-function optimizeSnapshot(html: string): string {
-  const localized = mapRecoveredAssets(html, assetMap);
+function optimizeSnapshot(html: string, file: string): string {
+  const filtered = file === "index.fragment.html"
+    ? removeDivAncestorContainingText(html, "Collaborators", "directors-section")
+    : html;
+  const localized = mapRecoveredAssets(filtered, assetMap);
   const images = localized.replace(/<img\b[^>]*>/gi, optimizeImageTag);
   const backgrounds = deferBackgroundImages(optimizeBackgroundImages(images));
   return deferEmbeddedMedia(backgrounds);
@@ -175,7 +206,11 @@ const snapshotFiles = (await readdir(snapshotRoot))
 await Promise.all(snapshotFiles.map(async (file) => {
   const path = join(snapshotRoot, file);
   const html = await readFile(path, "utf8");
-  await writeFile(path, optimizeSnapshot(html));
+  const optimized = optimizeSnapshot(html, file);
+  if (file === "index.fragment.html" && optimized.includes(">Collaborators<")) {
+    throw new Error("Homepage Collaborators section survived production optimization");
+  }
+  await writeFile(path, optimized);
 }));
 
 const indexPath = join(distRoot, "index.html");
