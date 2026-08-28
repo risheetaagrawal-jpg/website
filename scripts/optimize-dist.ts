@@ -110,11 +110,15 @@ function optimizeImageTag(tag: string): string {
   }
 
   const classes = getAttribute(optimized, "class") ?? "";
+  const isCursorImage = classes.split(/\s+/).some((className) => (
+    className === "cursor-image" || className === "hover-image" || className === "view-image"
+  ));
   const isPriorityImage = getAttribute(optimized, "loading") === "eager"
     || classes.includes("events-image-mobile homepage-image")
     || (classes.includes("events-image-mobile") && classes.includes("visible"))
     || classes.includes("films-cover-image")
-    || classes.includes("archival-detail__image");
+    || classes.includes("archival-detail__image")
+    || isCursorImage;
   optimized = setAttribute(optimized, "loading", isPriorityImage ? "eager" : "lazy");
   optimized = setAttribute(optimized, "decoding", "async");
   if (isPriorityImage) optimized = setAttribute(optimized, "fetchpriority", "high");

@@ -1,6 +1,8 @@
 type CursorState = "cursor" | "hover" | "view" | "hidden";
+type PointerPosition = { x: number; y: number };
 
 const loaderAsset = "/recovered-assets/files/cdn.prod.website-files.com/63dd2131ded6c2a2640cd5bd/642d4ffabf1f5e10f5a2390b_EO2-Loader.gif";
+let lastFinePointerPosition: PointerPosition | null = null;
 
 const handCursorSelector = [
   "a.btn-link",
@@ -38,16 +40,7 @@ const viewCursorSelector = [
 ].join(",");
 
 function recoveredCursorState(target: Element, root: HTMLElement): CursorState {
-  const filmCollection = target.closest(".collection-list-7");
-  if (filmCollection) {
-    const path = window.location.pathname;
-    const onFilmListing = path === "/films/all"
-      || path === "/films/ott"
-      || path === "/films/branded-commercials"
-      || path === "/films/music-video"
-      || path === "/films/unscripted";
-    return onFilmListing ? "view" : "hidden";
-  }
+  if (target.closest(".collection-list-7")) return "view";
   if (target.closest(viewCursorSelector)) return "view";
   if (target.closest(handCursorSelector)) return "hover";
   return root.contains(target) ? "cursor" : "hidden";
@@ -61,17 +54,25 @@ function installRecoveredCursor(root: HTMLElement): () => void {
   const cursorMode = window.matchMedia(
     "(hover: hover) and (pointer: fine) and (min-width: 992px) and (prefers-reduced-motion: no-preference)",
   );
+  const cursorImages = [...wrapper.querySelectorAll<HTMLImageElement>("img")];
   const smoothed = root.querySelector(".collection-list-7") !== null;
-  let targetX = window.innerWidth / 2;
-  let targetY = window.innerHeight / 2;
+  let targetX = lastFinePointerPosition?.x ?? window.innerWidth / 2;
+  let targetY = lastFinePointerPosition?.y ?? window.innerHeight / 2;
   let currentX = targetX;
   let currentY = targetY;
   let animationFrame = 0;
   let listening = false;
+  let active = true;
+  let assetsReady = cursorImages.length > 0
+    && cursorImages.every((image) => image.complete && image.naturalWidth > 0);
 
   wrapper.setAttribute("aria-hidden", "true");
   wrapper.classList.add("eo2-cursor-ready");
   wrapper.dataset.eo2CursorState = "cursor";
+  for (const image of cursorImages) {
+    image.loading = "eager";
+    image.fetchPriority = "high";
+  }
 
   const render = () => {
     animationFrame = 0;
@@ -88,18 +89,39 @@ function installRecoveredCursor(root: HTMLElement): () => void {
     if (!animationFrame) animationFrame = window.requestAnimationFrame(render);
   };
 
-  const onPointerMove = (event: PointerEvent) => {
-    if (!cursorMode.matches || event.pointerType === "touch") return;
-    targetX = event.clientX;
-    targetY = event.clientY;
-    const target = event.target;
-    const state = target instanceof Element ? recoveredCursorState(target, root) : "hidden";
-    wrapper.dataset.eo2CursorState = state;
-    wrapper.classList.toggle("is-visible", state !== "hidden");
-    requestRender();
+  const hideCursor = () => {
+    wrapper.classList.remove("is-visible");
+    document.documentElement.classList.remove("eo2-cursor-enabled");
   };
 
-  const hideCursor = () => wrapper.classList.remove("is-visible");
+  const syncCursorAt = (position: PointerPosition) => {
+    targetX = position.x;
+    targetY = position.y;
+    const target = document.elementFromPoint(position.x, position.y);
+    const state = target ? recoveredCursorState(target, root) : "hidden";
+    wrapper.dataset.eo2CursorState = state;
+    if (!listening || !assetsReady || state === "hidden") {
+      hideCursor();
+      return;
+    }
+    requestRender();
+    wrapper.classList.add("is-visible");
+    document.documentElement.classList.add("eo2-cursor-enabled");
+  };
+
+  const onPointerMove = (event: PointerEvent) => {
+    if (!cursorMode.matches || event.pointerType === "touch") return;
+    const isFirstPointerPosition = lastFinePointerPosition === null;
+    lastFinePointerPosition = { x: event.clientX, y: event.clientY };
+    if (isFirstPointerPosition) {
+      targetX = event.clientX;
+      targetY = event.clientY;
+      currentX = event.clientX;
+      currentY = event.clientY;
+    }
+    syncCursorAt(lastFinePointerPosition);
+  };
+
   const onPointerOut = (event: PointerEvent) => {
     if (event.relatedTarget === null) hideCursor();
   };
@@ -108,24 +130,38 @@ function installRecoveredCursor(root: HTMLElement): () => void {
     currentY = Math.min(currentY, window.innerHeight);
     targetX = Math.min(targetX, window.innerWidth);
     targetY = Math.min(targetY, window.innerHeight);
-    requestRender();
+    if (lastFinePointerPosition) {
+      lastFinePointerPosition = { x: targetX, y: targetY };
+      syncCursorAt(lastFinePointerPosition);
+    }
   };
+
+  const syncAssetReadiness = () => {
+    if (!active) return;
+    assetsReady = cursorImages.length > 0
+      && cursorImages.every((image) => image.complete && image.naturalWidth > 0);
+    if (assetsReady && lastFinePointerPosition) syncCursorAt(lastFinePointerPosition);
+  };
+  for (const image of cursorImages) {
+    image.addEventListener("load", syncAssetReadiness);
+    image.addEventListener("error", syncAssetReadiness);
+  }
+  syncAssetReadiness();
 
   const startListening = () => {
     if (listening) return;
     listening = true;
-    document.documentElement.classList.add("eo2-cursor-enabled");
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("pointerout", onPointerOut, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
     window.addEventListener("blur", hideCursor);
+    if (lastFinePointerPosition) syncCursorAt(lastFinePointerPosition);
   };
 
   const stopListening = () => {
     if (!listening) return;
     listening = false;
-    document.documentElement.classList.remove("eo2-cursor-enabled");
-    wrapper.classList.remove("is-visible");
+    hideCursor();
     window.removeEventListener("pointermove", onPointerMove);
     window.removeEventListener("pointerout", onPointerOut);
     window.removeEventListener("resize", onResize);
@@ -143,7 +179,12 @@ function installRecoveredCursor(root: HTMLElement): () => void {
   syncCursorMode();
 
   return () => {
+    active = false;
     cursorMode.removeEventListener("change", syncCursorMode);
+    for (const image of cursorImages) {
+      image.removeEventListener("load", syncAssetReadiness);
+      image.removeEventListener("error", syncAssetReadiness);
+    }
     stopListening();
     wrapper.classList.remove("eo2-cursor-ready");
     wrapper.removeAttribute("data-eo2-cursor-state");
@@ -189,6 +230,7 @@ export function installRecoveredInteractionLayer(): () => void {
   let loaderDelayTimer = 0;
   let scheduledFrame = 0;
   let currentPage: HTMLElement | null = null;
+  let currentCursorWrapper: HTMLElement | null = null;
   let cleanupCursor: () => void = () => undefined;
 
   const clearLoaderTimer = () => {
@@ -233,9 +275,11 @@ export function installRecoveredInteractionLayer(): () => void {
   const sync = () => {
     scheduledFrame = 0;
     const page = appRoot.querySelector<HTMLElement>(".recovered-page");
-    if (page !== currentPage) {
+    const cursorWrapper = page?.querySelector<HTMLElement>(".cursor-wrapper") ?? null;
+    if (page !== currentPage || cursorWrapper !== currentCursorWrapper) {
       cleanupCursor();
       currentPage = page;
+      currentCursorWrapper = cursorWrapper;
       cleanupCursor = page ? installRecoveredCursor(page) : () => undefined;
     }
 

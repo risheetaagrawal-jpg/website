@@ -395,7 +395,7 @@ function prepareRecoveredHtml(
     image.loading = "lazy";
     image.decoding = "async";
   }
-  for (const image of template.content.querySelectorAll<HTMLImageElement>(".nav-logo, .image-5")) {
+  for (const image of template.content.querySelectorAll<HTMLImageElement>(".nav-logo, .image-5, .cursor-wrapper img")) {
     image.loading = "eager";
     image.fetchPriority = "high";
   }
