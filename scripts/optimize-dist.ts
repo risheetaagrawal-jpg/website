@@ -1,6 +1,7 @@
 import { readdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { mapRecoveredAssets } from "../src/assets";
+import { compactRecoveryMetadata } from "./compact-recovery-metadata";
 
 const projectRoot = join(import.meta.dir, "..");
 const distRoot = join(projectRoot, "dist");
@@ -201,7 +202,7 @@ function optimizeSnapshot(html: string, file: string): string {
   const localized = mapRecoveredAssets(filtered, assetMap);
   const images = localized.replace(/<img\b[^>]*>/gi, optimizeImageTag);
   const backgrounds = deferBackgroundImages(optimizeBackgroundImages(images));
-  return deferEmbeddedMedia(backgrounds);
+  return compactRecoveryMetadata(deferEmbeddedMedia(backgrounds));
 }
 
 const snapshotFiles = (await readdir(snapshotRoot))
