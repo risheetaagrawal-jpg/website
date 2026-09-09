@@ -450,7 +450,7 @@ function prepareRecoveredHtml(
 }
 
 function deferredMediaRootMargin(): string {
-  return window.matchMedia("(max-width: 767px)").matches ? "250px 0px" : "600px 0px";
+  return window.matchMedia("(max-width: 767px)").matches ? "200px 0px" : "300px 0px";
 }
 
 function installDeferredBackgrounds(root: Element): () => void {

@@ -40,15 +40,6 @@ function snapshotBootstrap() {
       image.fetchPriority = 'high';
       document.head.append(image);
     }
-    if (resolvedPath === '/' && matchMedia('(max-width: 767px)').matches) {
-      const video = document.createElement('link');
-      video.rel = 'preload';
-      video.as = 'video';
-      video.type = 'video/mp4';
-      video.href = '/recovered-assets/files/uploads-ssl.webflow.com/63dd2131ded6c2a2640cd5bd/647a21bd2a517cc70c96b23e_ShowreelEo2Trimmed-mobile.mp4';
-      video.fetchPriority = 'high';
-      document.head.append(video);
-    }
     const file = files[resolvedPath + location.search] || files[resolvedPath] || files['/404'];
     if (!file) return;
     window.__eo2InitialSnapshot = {
