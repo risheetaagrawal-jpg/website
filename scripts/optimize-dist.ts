@@ -1,9 +1,9 @@
 import { readdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { mapRecoveredAssets } from "../src/assets";
-import { compactRecoveryMetadata } from "./compact-recovery-metadata";
+import { mapRecoveredAssets } from "../src/assets.ts";
+import { compactRecoveryMetadata } from "./compact-recovery-metadata.ts";
 
-const projectRoot = join(import.meta.dir, "..");
+const projectRoot = join(import.meta.dirname, "..");
 const distRoot = join(projectRoot, "dist");
 const snapshotRoot = join(distRoot, "snapshots");
 const recoveredAssetRoot = join(distRoot, "recovered-assets");
