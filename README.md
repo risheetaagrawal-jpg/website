@@ -1,3 +1,9 @@
+# EO2 EXP
+
+The current interface is the native React redesign in `src/redesign/`. See [redesign scope, validation and staging](docs/redesign/README.md). Run `bun run content:extract` to refresh its typed content from the checked-in recovery snapshots.
+
+The original recovery documentation below describes the retained source material and legacy implementation.
+
 # EO2 EXP recovered React site
 
 This is a static React recreation of the terminated Webflow project, recovered from its authenticated Designer preview and exact published archive snapshots. It preserves the official Webflow styling, page markup, navigation, responsive variants, forms, images, and available media while replacing recovered Webflow/CDN asset dependencies with local files.

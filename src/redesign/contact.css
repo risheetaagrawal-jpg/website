@@ -1,0 +1,241 @@
+.contact-page {
+  background: #090909;
+  color: #fff;
+  padding: 144px 4vw 96px;
+}
+
+.contact-page__intro {
+  margin-bottom: 96px;
+}
+
+.contact-page__eyebrow {
+  margin: 0 0 32px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contact-page h1 {
+  margin: 0;
+  font-size: clamp(56px, 9vw, 160px);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+  text-transform: uppercase;
+}
+
+.contact-page h1 > span {
+  display: block;
+}
+
+.contact-page h1 > .contact-page__accent {
+  color: #ff3985;
+}
+
+.contact-page__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr);
+  gap: 64px;
+  padding-top: 48px;
+  border-top: 1px solid #454545;
+}
+
+.contact-page__direct {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 48px;
+}
+
+.contact-page__direct h2 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #aaa;
+}
+
+.contact-page__direct a {
+  display: inline-block;
+  padding: 8px 0;
+  font-size: clamp(15px, 1.35vw, 24px);
+  text-decoration: none;
+  color: inherit;
+}
+
+.contact-page__direct a span {
+  display: inline-block;
+  margin-left: 8px;
+  color: #fff16b;
+}
+
+.contact-page__direct a:hover {
+  color: #fff16b;
+}
+
+.contact-page__copy {
+  display: block;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: #aaa;
+  font: inherit;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.contact-page__copy:hover {
+  color: #fff16b;
+}
+
+.contact-page__copy-status {
+  min-height: 40px;
+  margin: 0;
+  color: #ccc;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.contact-page__form {
+  min-width: 0;
+}
+
+.contact-page__names {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+}
+
+.contact-page__field {
+  margin-bottom: 40px;
+}
+
+.contact-page__field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.contact-page__field input,
+.contact-page__field textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid #666;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  transition: border-color 160ms ease;
+}
+
+.contact-page__field textarea {
+  min-height: 144px;
+  resize: vertical;
+}
+
+.contact-page__field input:focus,
+.contact-page__field textarea:focus {
+  border-color: #fff16b;
+  outline: 2px solid #fff16b;
+  outline-offset: 6px;
+}
+
+.contact-page__submit {
+  display: flex;
+  width: 100%;
+  min-height: 80px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: #fff16b;
+  font: inherit;
+  font-size: clamp(18px, 2vw, 32px);
+  text-align: left;
+  cursor: pointer;
+}
+
+.contact-page__submit-arrow {
+  display: grid;
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 32px;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+.contact-page__submit:hover .contact-page__submit-arrow {
+  background: #fff16b;
+  color: #090909;
+}
+
+.contact-page a:focus-visible,
+.contact-page button:focus-visible {
+  outline: 2px solid #fff16b;
+  outline-offset: 6px;
+}
+
+.contact-page__status {
+  min-height: 40px;
+  margin: 16px 0 0;
+  color: #ccc;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .contact-page {
+    padding: 112px 24px 64px;
+  }
+
+  .contact-page__intro {
+    margin-bottom: 48px;
+  }
+
+  .contact-page h1 {
+    font-size: clamp(32px, 8.5vw, 64px);
+    letter-spacing: -0.06em;
+    line-height: 1;
+  }
+
+  .contact-page__body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+    padding-top: 32px;
+  }
+
+  .contact-page__direct {
+    gap: 24px;
+  }
+
+  .contact-page__names {
+    gap: 24px;
+  }
+
+  .contact-page__field {
+    margin-bottom: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-page *,
+  .contact-page *::before,
+  .contact-page *::after {
+    transition: none !important;
+  }
+}
