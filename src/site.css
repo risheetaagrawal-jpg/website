@@ -622,3 +622,37 @@ body.nav-open {
     transition-duration: 0.01ms !important;
   }
 }
+/* Native modal keeps keyboard focus in the player and supports Escape. */
+.eo2-vimeo-player {
+  width: min(1120px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid #444;
+  background: #050505;
+  color: #fff;
+  overflow: auto;
+}
+
+.eo2-vimeo-player::backdrop { background: rgb(0 0 0 / 85%); }
+
+.eo2-vimeo-player iframe {
+  display: block;
+  width: 100%;
+  height: min(63vw, 630px, calc(100dvh - 100px));
+  border: 0;
+}
+
+.eo2-vimeo-close {
+  display: block;
+  margin-left: auto;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.eo2-vimeo-close:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }

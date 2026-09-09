@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { mapRecoveredAssets } from "./assets";
+import { vimeoEmbedUrl } from "./vimeo";
 import { selectedWorkStudios, type SelectedWorkProject } from "./selectedWorkData";
 import snapshotManifest from "virtual:eo2-snapshot-manifest";
 import "./site.css";
@@ -74,7 +75,7 @@ function populateRecoveredCard(card: HTMLElement, project: SelectedWorkProject):
       alt: `${project.title} — ${project.client}`,
       href: project.href,
       imageSrc: project.image,
-      label: `Watch ${project.title} for ${project.client} on ${project.platform}`,
+      label: `Watch ${project.title} for ${project.client}${project.platform === "Vimeo" ? "" : ` on ${project.platform}`}`,
       openInNewTab: true,
     });
     const title = card.querySelector<HTMLElement>(".text-block-60");
@@ -186,11 +187,9 @@ function extractFilmEmbedMeta(iframe: HTMLIFrameElement): { poster: string | nul
     const embedded = parsed.searchParams.get("src") ?? parsed.searchParams.get("url");
     if (embedded) {
       const nested = new URL(embedded);
-      const videoMatch = nested.pathname.match(/\/video\/(\d+)/);
-      const id = videoMatch?.[1] ?? nested.pathname.match(/\/(\d+)/)?.[1];
-      if (id) vimeoHref = `https://vimeo.com/${id}`;
-      else if (nested.hostname.includes("vimeo.com")) vimeoHref = nested.href;
+      if (vimeoEmbedUrl(nested.href)) vimeoHref = nested.href;
     }
+    if (!vimeoHref && vimeoEmbedUrl(parsed.href)) vimeoHref = parsed.href;
   } catch {
     const imageMatch = source.match(/[?&]image=([^&]+)/);
     if (imageMatch) {
@@ -260,7 +259,7 @@ function hydrateFilmListingCards(root: Element): void {
       alt: title,
       href,
       imageSrc: poster,
-      label: detailHref ? `Open ${title}` : `Watch ${title} on Vimeo`,
+      label: detailHref ? `Open ${title}` : `Watch ${title}`,
       openInNewTab: !detailHref,
     });
 
