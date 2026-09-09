@@ -656,3 +656,12 @@ body.nav-open {
 }
 
 .eo2-vimeo-close:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+
+.eo2-video-fallback {
+  display: block;
+  min-height: 44px;
+  padding: 12px 20px;
+  color: #fff;
+  text-align: right;
+  text-decoration: underline;
+}

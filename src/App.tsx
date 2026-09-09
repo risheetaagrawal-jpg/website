@@ -75,7 +75,7 @@ function populateRecoveredCard(card: HTMLElement, project: SelectedWorkProject):
       alt: `${project.title} — ${project.client}`,
       href: project.href,
       imageSrc: project.image,
-      label: `Watch ${project.title} for ${project.client}${project.platform === "Vimeo" ? "" : ` on ${project.platform}`}`,
+      label: `Watch ${project.title} for ${project.client}${project.platform === "Instagram" ? " on Instagram" : ""}`,
       openInNewTab: true,
     });
     const title = card.querySelector<HTMLElement>(".text-block-60");
@@ -90,7 +90,7 @@ function populateRecoveredCard(card: HTMLElement, project: SelectedWorkProject):
     anchor.href = project.href;
     anchor.target = "_blank";
     anchor.rel = "noopener noreferrer";
-    anchor.setAttribute("aria-label", `Watch ${project.title} for ${project.client} on ${project.platform}`);
+    anchor.setAttribute("aria-label", `Watch ${project.title} for ${project.client}${project.platform === "Instagram" ? " on Instagram" : ""}`);
   }
 
   const image = card.querySelector<HTMLImageElement>("img.scroll-img, img.tab-img");

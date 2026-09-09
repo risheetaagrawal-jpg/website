@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
-import { installVimeoPlayer } from './vimeo'
+import { installVideoPlayer } from './vimeo'
 
-installVimeoPlayer()
+installVideoPlayer()
 
 if (window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 992px)').matches) {
   void import('./cursor.ts').then(({ installRecoveredInteractionLayer }) => {

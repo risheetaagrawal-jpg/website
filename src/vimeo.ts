@@ -1,3 +1,5 @@
+import { youtubeEmbedUrl } from './youtube';
+
 /** Accept video URLs only, leaving profile and other external links alone. */
 export function vimeoEmbedUrl(href: string): string | null {
   try {
@@ -22,7 +24,7 @@ export function vimeoEmbedUrl(href: string): string | null {
 }
 
 /** Delegation also covers cards inserted by snapshot hydration and navigation. */
-export function installVimeoPlayer(): () => void {
+export function installVideoPlayer(): () => void {
   let activeDialog: HTMLDialogElement | null = null;
   const close = () => activeDialog?.close();
 
@@ -30,7 +32,8 @@ export function installVimeoPlayer(): () => void {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const link = event.target instanceof Element ? event.target.closest('a') : null;
     if (!link || !link.closest('.recovered-page') || link.hasAttribute('download')) return;
-    const src = vimeoEmbedUrl(link.href);
+    const youtubeSrc = youtubeEmbedUrl(link.href);
+    const src = vimeoEmbedUrl(link.href) ?? youtubeSrc;
     if (!src) return;
     event.preventDefault();
     if (activeDialog) return;
@@ -46,10 +49,20 @@ export function installVimeoPlayer(): () => void {
     button.addEventListener('click', close);
     const frame = document.createElement('iframe');
     frame.title = link.querySelector('img')?.alt || link.getAttribute('aria-label') || 'EO2 EXP film';
-    frame.allow = 'autoplay; fullscreen; picture-in-picture';
+    frame.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
     frame.allowFullscreen = true;
     frame.src = src;
     dialog.append(button, frame);
+    if (youtubeSrc) {
+      const fallback = document.createElement('a');
+      fallback.className = 'eo2-video-fallback';
+      fallback.href = link.href;
+      fallback.target = '_blank';
+      fallback.rel = 'noopener noreferrer';
+      fallback.textContent = 'Watch on YouTube';
+      dialog.append(fallback);
+    }
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     dialog.addEventListener('close', () => {
