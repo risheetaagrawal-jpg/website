@@ -298,7 +298,10 @@ function HomePage() {
           <span>IDEAS INTO EXPERIENCES.</span>
           <span>EO2 EXP</span>
         </div>
-        <p className="studio-statement">{brand.description}</p>
+        <p className="studio-statement">
+          EO2 EXP is a creative network. Five studios that take a brand or a
+          title from <em>idea to audience</em> // online, &amp; off.
+        </p>
         <div className="section-heading">
           <h2 className="display-title">
             GOOD
